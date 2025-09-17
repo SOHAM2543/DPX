@@ -1,0 +1,301 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.card-result {
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  padding: 1rem 18px;
+  border-radius: 10px;
+  display: inline-block;
+  text-align: left;
+  min-width: 260px;
+  margin-top: 1rem;
+}
+
+.small-note {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.center-text {
+  text-align: center;
+}
+
+/* Shape image buttons */
+.shape-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.shape-btn {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  padding: 8px 5px;
+  margin: 0 5px;
+  border-radius: 8px;
+  background: #fff;
+  border: 2px solid transparent;
+  user-select: none;
+  transition: border-color 0.2s ease, all 0.16s ease;
+  text-align: center;
+}
+
+.shape-btn img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.shape-btn span {
+  font-size: 13px;
+  margin-top: 6px;
+  color: #333;
+}
+
+.shape-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.shape-btn.active {
+  border-color: #0d6efd;
+  box-shadow: 0 10px 28px rgba(13, 110, 253, 0.12);
+  background-color: #e7f1ff;
+}
+
+.pill.active {
+  background-color: #0d6efd !important;
+  color: white !important;
+}
+
+/* slider value */
+.slider-value {
+  font-weight: 700;
+  margin-left: 8px;
+  color: #0d6efd;
+}
+
+/* calculate button click effect */
+@keyframes btnPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes btnClickAnim {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn-clicked {
+  animation: btnPulse 0.28s ease;
+}
+
+/* loader overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.overlay .spinner {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  flex-direction: row;
+}
+
+.overlay .spinner .spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* first visit loader */
+.first-loader {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  background: linear-gradient(90deg, rgba(13, 110, 253, 0.12), rgba(0, 0, 0, 0.05));
+}
+
+.first-loader .box {
+  background: #fff;
+  padding: 22px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.first-loader .diamond {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+footer {
+  padding: 12px 0;
+  background: transparent;
+}
+
+.result-centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.result-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Diamond loader animation */
+.diamond-loader {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  animation: rotateDiamond 3s linear infinite;
+}
+
+.diamond-shape {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #0d6efd, #66b2ff);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  box-shadow: 0 0 15px #66b2ff;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 6px #0d6efd);
+}
+
+.sparkle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, #fff 60%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: sparkleBlink 2s infinite ease-in-out;
+}
+
+.sparkle1 {
+  top: 0;
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.sparkle2 {
+  top: 30px;
+  right: 10px;
+  animation-delay: 0.7s;
+}
+
+.sparkle3 {
+  bottom: 10px;
+  left: 30px;
+  animation-delay: 1.4s;
+}
+
+@keyframes rotateDiamond {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sparkleBlink {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .shape-btn {
+    width: 84px;
+  }
+  .shape-btn img {
+    width: 64px;
+    height: 64px;
+  }
+  .card-result {
+    min-width: unset;
+    width: 100%;
+  }
+}
+/* Add to your CSS file */
+.lab-options {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.lab-options .btn {
+  border-radius: 20px;
+  padding: 2px 12px;
+  font-size: 0.85rem;
+}
+
+.mode-panel {
+  transition: opacity 0.3s ease;
+}
+
+.shape-btn img[src=""], 
+.shape-btn img:not([src]) {
+  opacity: 0.4;
+}
+
+/* Ensure all panels have the same basic styling */
+.mode-panel.card {
+  border: 1px solid rgba(0,0,0,0.125);
+  border-radius: 0.375rem;
+}

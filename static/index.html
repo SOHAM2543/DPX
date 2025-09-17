@@ -1,0 +1,1097 @@
+<!-- static/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diamond Price Xpert</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="static/style.css" />
+  <style>
+    .price-input-group {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    .price-input-group .form-label {
+      font-weight: 600;
+    }
+    .calculation-note {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-top: 8px;
+      font-style: italic;
+    }
+    .editable-total {
+      background-color: #fff3cd !important;
+      border-color: #ffeaa7 !important;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <!-- First-visit unique loader -->
+  <div class="first-loader" id="firstLoader">
+    <div class="box">
+      <div class="diamond">💎</div>
+      <div style="font-weight:700; margin-bottom:6px;">Welcome to Diamond Price Xpert</div>
+      <div class="small-note">Preparing your experience — one moment please...</div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="container text-center">
+
+      <h2 class="mb-1">💎 Diamond Price Xpert</h2>
+      <p class="small-note mb-4">Your Ultimate Diamond Pricing Assistant</p>
+
+      <div class="mb-3">
+        <div class="btn-group" role="group" id="modeBtns">
+          <button class="btn btn-outline-primary active" data-mode="gia">GIA Calculator</button>
+          <button class="btn btn-outline-primary" data-mode="recut">Recut Calculator</button>
+        </div>
+      </div>
+
+      <div id="lastUpdated" class="small-note mb-3"></div>
+
+      <!-- Panels wrapper -->
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+          <!-- GIA Panel -->
+          <div id="panel-gia" class="mode-panel card p-3 mb-3">
+            <div class="row g-3 align-items-center">
+              <div class="col-md-6">
+                <label class="form-label">Weight (Cts)</label>
+                <input id="gia-weight" class="form-control text-center" type="number" step="0.01" value="0.30" />
+                <label class="mt-3 d-block">Shape</label>
+                <div id="gia-shapes" class="mb-2 shape-container"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label>Color</label>
+                <div id="gia-colors" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Clarity</label>
+                <div id="gia-clarities" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+                
+                <div>
+                <label>LAB:</label>
+                <div id="gia-labs" class="lab-options">
+                    <button type="button" class="btn btn-sm btn-outline-secondary pill active" data-value="GIA">GIA</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary pill" data-value="HRD">HRD</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary pill" data-value="IGI">IGI</button>
+                </div>
+                </div>
+
+                <div class="mt-2">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="gia-5cts" />
+                    <label class="form-check-label" for="gia-5cts">Use 5 Cts Rap Price</label>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <label>Discount (%) <span class="slider-value" id="gia-discount-val">0</span></label>
+                  <input id="gia-discount" type="range" class="form-range" min="-100" max="0" step="1" value="0" />
+                </div>
+              </div>
+              
+              <!-- Price Input Fields -->
+              <div class="col-12 price-input-group">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="form-label">Rap Price/Ct ($)</label>
+                    <input id="gia-rap-price" class="form-control text-center" type="number" step="0.01" value="0" readonly />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Price Per Carat ($)</label>
+                    <input id="gia-price-per-carat" class="form-control text-center" type="number" step="0.01" value="0" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Total Amount ($)</label>
+                    <input id="gia-total-amount" class="form-control text-center editable-total" type="number" step="0.01" value="0" />
+                  </div>
+                </div>
+                <div class="calculation-note">
+                  <em>💡 Make a change anywhere, and let the magic calculate the rest!</em>
+                </div>
+              </div>
+              
+              <div class="mt-3 d-flex justify-content-center gap-2">
+                <button id="gia-calc" class="btn btn-primary">Calculate</button>
+                <button id="gia-reset" class="btn btn-outline-secondary">Reset</button>
+              </div>
+
+              <div class="result-centered mt-3" id="gia-result"></div>
+            </div>
+          </div>
+
+          <!-- HRD Panel -->
+          <div id="panel-hrd" class="mode-panel card p-3 mb-3 d-none">
+            <div class="row g-3 align-items-center">
+              <div class="col-md-6">
+                <label class="form-label">Weight (Cts)</label>
+                <input id="hrd-weight" class="form-control text-center" type="number" step="0.01" value="0.30" />
+                <label class="mt-3 d-block">Shape</label>
+                <div id="hrd-shapes" class="mb-2 shape-container"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label>Color</label>
+                <div id="hrd-colors" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Clarity</label>
+                <div id="hrd-clarities" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <div class="mt-2">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="hrd-5cts" />
+                    <label class="form-check-label" for="hrd-5cts">Use 5 Cts Rap Price</label>
+                  </div>
+                </div>
+
+                <div class="mt-3 row gx-2">
+                  <div class="col">
+                    <label>Discount (%) <span class="slider-value" id="hrd-disc-val">10</span></label>
+                    <input id="hrd-disc" type="range" class="form-range" min="-100" max="100" step="1" value="10" />
+                  </div>
+                  <div class="col">
+                    <label>Discount (GIA) (%) <span class="slider-value" id="hrd-disc-gia-val">10</span></label>
+                    <input id="hrd-disc-gia" type="range" class="form-range" min="-100" max="100" step="1" value="10" />
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Price Input Fields -->
+              <div class="col-12 price-input-group">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="form-label">Rap Price/Ct ($)</label>
+                    <input id="hrd-rap-price" class="form-control text-center" type="number" step="0.01" value="0" readonly />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Price Per Carat ($)</label>
+                    <input id="hrd-price-per-carat" class="form-control text-center" type="number" step="0.01" value="0" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Total Amount ($)</label>
+                    <input id="hrd-total-amount" class="form-control text-center editable-total" type="number" step="0.01" value="0" />
+                  </div>
+                </div>
+                <div class="calculation-note">
+                  <em>💡 Make a change anywhere, and let the magic calculate the rest!</em>
+                </div>
+              </div>
+              
+              <div class="mt-3 d-flex justify-content-center gap-2">
+                <button id="hrd-calc" class="btn btn-primary">Calculate</button>
+                <button id="hrd-reset" class="btn btn-outline-secondary">Reset</button>
+              </div>
+
+              <div class="result-centered mt-3" id="hrd-result"></div>
+            </div>
+          </div>
+
+          <!-- Recut Panel -->
+          <div id="panel-recut" class="mode-panel card p-3 mb-3 d-none">
+            <div class="row g-3">
+              <div class="col-md-6 border-end">
+                <h5 class="mb-2 center-text">Diamond A</h5>
+                <label>Weight (Cts)</label>
+                <input id="recut-a-weight" class="form-control text-center" type="number" step="0.01" value="0.30" />
+                <label class="mt-2 d-block">Shape</label>
+                <div id="recut-a-shapes" class="mb-2 shape-container"></div>
+
+                <label class="mt-2">Color</label>
+                <div id="recut-a-colors" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Clarity</label>
+                <div id="recut-a-clarities" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Discount (%) <span class="slider-value" id="recut-a-disc-val">10</span></label>
+                <input id="recut-a-disc" type="range" class="form-range" min="-100" max="100" step="1" value="10" />
+                
+                <!-- Price Input Fields for Diamond A -->
+                <div class="price-input-group mt-3">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-label">Rap Price/Ct ($)</label>
+                      <input id="recut-a-rap-price" class="form-control text-center" type="number" step="0.01" value="0" readonly />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Price Per Carat ($)</label>
+                      <input id="recut-a-price-per-carat" class="form-control text-center" type="number" step="0.01" value="0" />
+                    </div>
+                    <div class="col-12 mt-2">
+                      <label class="form-label">Total Amount ($)</label>
+                      <input id="recut-a-total-amount" class="form-control text-center editable-total" type="number" step="0.01" value="0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <h5 class="mb-2 center-text">Diamond B</h5>
+                <label>Weight (Cts)</label>
+                <input id="recut-b-weight" class="form-control text-center" type="number" step="0.01" value="0.50" />
+                <label class="mt-2 d-block">Shape</label>
+                <div id="recut-b-shapes" class="mb-2 shape-container"></div>
+
+                <label class="mt-2">Color</label>
+                <div id="recut-b-colors" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Clarity</label>
+                <div id="recut-b-clarities" class="mb-2 d-flex justify-content-center flex-wrap gap-2"></div>
+
+                <label class="mt-2">Discount (%) <span class="slider-value" id="recut-b-disc-val">10</span></label>
+                <input id="recut-b-disc" type="range" class="form-range" min="-100" max="100" step="1" value="10" />
+                
+                <!-- Price Input Fields for Diamond B -->
+                <div class="price-input-group mt-3">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-label">Rap Price/Ct ($)</label>
+                      <input id="recut-b-rap-price" class="form-control text-center" type="number" step="0.01" value="0" readonly />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Price Per Carat ($)</label>
+                      <input id="recut-b-price-per-carat" class="form-control text-center" type="number" step="0.01" value="0" />
+                    </div>
+                    <div class="col-12 mt-2">
+                      <label class="form-label">Total Amount ($)</label>
+                      <input id="recut-b-total-amount" class="form-control text-center editable-total" type="number" step="0.01" value="0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex justify-content-center gap-2">
+              <button id="recut-calc" class="btn btn-primary">Calculate</button>
+              <button id="recut-reset" class="btn btn-outline-secondary">Reset</button>
+              <div class="form-check ms-auto" style="align-self:center;">
+                <input class="form-check-input" type="checkbox" value="" id="recut-5cts" />
+                <label class="form-check-label" for="recut-5cts">Use 5 Cts Rap Price</label>
+              </div>
+            </div>
+
+            <div class="result-centered mt-3" id="recut-result"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <footer class="small-note center-text">
+        © 2025 Developed by Soham Jagtap | Sr. Data Analyst<br />
+        🔗 <a href="https://github.com/Soham2543" target="_blank">GitHub</a> | 💼 <a href="https://www.linkedin.com/in/sohamvjagtap/" target="_blank">LinkedIn</a><br /><br />
+        🚀 You're using Version 1.0<br />
+        Please share your valuable feedback at <a href="mailto:sohamvjagtap9750@gmail.com">📧 SohamJagtap</a>
+      </footer>
+
+
+    </div>
+  </div>
+
+  <!-- loader overlay -->
+  <div
+    class="overlay"
+    id="overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:9999; justify-content:center; align-items:center; flex-direction:column;"
+  >
+    <div class="diamond-loader">
+      <div class="diamond-shape"></div>
+      <div class="sparkle sparkle1"></div>
+      <div class="sparkle sparkle2"></div>
+      <div class="sparkle sparkle3"></div>
+    </div>
+    <div
+      id="overlayText"
+      style="margin-top:15px; font-weight:bold; font-size:1.2rem; color:#0d6efd; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
+    >
+      ✨ Polishing the diamonds... Please wait! ✨
+    </div>
+  </div>
+
+  <!-- error modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Missing Selection</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="errorModalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // JavaScript for two-way calculation functionality
+    const apiBase = "/api";
+
+    // images - relative paths (ensure they exist under static/images/shapes/)
+    const SHAPES = [
+      { key: "RD", name: "Round (RD)", img: "/images/shapes/rd.png" },
+      { key: "PS", name: "Pear (PS)", img: "/images/shapes/ps.png" }
+    ];
+
+    // clarity order desired
+    const CLARITY_ORDER = ["FL","IF","VVS1","VVS2","VS1","VS2","SI1","SI2","SI3"];
+
+    // render shape buttons
+    function renderShapeButtons(containerId, defaultKey = "RD") {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      SHAPES.forEach((s, idx) => {
+        const btn = document.createElement("div");
+        btn.className = "shape-btn";
+        btn.dataset.value = s.key;
+        btn.innerHTML = `<img src="${s.img}" alt="${s.name}" onerror="this.onerror=null; this.src='/images/placeholder.png'; this.style.opacity=0.4"><span>${s.key}</span>`;
+        btn.addEventListener("click", () => {
+          [...container.children].forEach(c => c.classList.remove("active"));
+          btn.classList.add("active");
+          disableAutoCalcOnInputs(container.closest('.mode-panel'));
+        });
+        container.appendChild(btn);
+        if (idx === 0 && defaultKey === s.key) btn.classList.add("active");
+      });
+    }
+
+    // render pills (colors/clarities). For clarity, enforce CLARITY_ORDER.
+    function renderPills(containerId, options, isClarity=false) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      let opts = options ? [...options] : [];
+      if (isClarity) {
+        opts = CLARITY_ORDER.filter(c => options.includes(c));
+        options.forEach(c => { if (!opts.includes(c)) opts.push(c); });
+      }
+      opts.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-sm btn-outline-secondary pill";
+        btn.textContent = opt;
+        btn.dataset.value = opt;
+        btn.addEventListener("click", () => {
+          [...container.children].forEach(c=>c.classList.remove("active"));
+          btn.classList.add("active");
+          disableAutoCalcOnInputs(container.closest('.mode-panel'));
+        });
+        container.appendChild(btn);
+        if (idx === 0) btn.classList.add("active");
+      });
+    }
+
+    // render LAB buttons below clarity in GIA panel
+    function renderLabButtons(containerId, defaultLab = "GIA") {
+      const labs = ["GIA", "HRD", "IGI"];
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      labs.forEach((lab, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-sm btn-outline-secondary pill lab-btn";
+        btn.textContent = lab;
+        btn.dataset.value = lab;
+        btn.addEventListener("click", () => {
+          [...container.children].forEach(c=>c.classList.remove("active"));
+          btn.classList.add("active");
+          disableAutoCalcOnInputs(container.closest('.mode-panel'));
+        });
+        container.appendChild(btn);
+        if (lab === defaultLab) btn.classList.add("active");
+      });
+    }
+
+    // fetch meta
+    const EXTRA_COLORS = ["N", "OP", "QR", "ST", "UV", "WX", "YZ"];
+    async function loadMeta() {
+      try {
+        const res = await fetch(`${apiBase}/meta`);
+        const meta = await res.json();
+
+        // Append extra colors to meta.colors if not present
+        const colorsWithExtra = [...new Set([...(meta.colors || []), ...EXTRA_COLORS])];
+
+        // Ensure "FL" is included in clarities
+        const claritiesWithFL = [...new Set([...(meta.clarities || []), "FL"])];
+
+        // shapes
+        ["gia-shapes","hrd-shapes","recut-a-shapes","recut-b-shapes"].forEach(id => renderShapeButtons(id));
+
+        // colors
+        renderPills("gia-colors", colorsWithExtra);
+        renderPills("hrd-colors", colorsWithExtra);
+        renderPills("recut-a-colors", colorsWithExtra);
+        renderPills("recut-b-colors", colorsWithExtra);
+
+        // clarities with forced FL and correct order
+        renderPills("gia-clarities", claritiesWithFL, true);
+        renderPills("hrd-clarities", claritiesWithFL, true);
+        renderPills("recut-a-clarities", claritiesWithFL, true);
+        renderPills("recut-b-clarities", claritiesWithFL, true);
+
+        // render LAB buttons in GIA panel below clarity
+        renderLabButtons("gia-labs", "GIA");
+
+        document.getElementById("lastUpdated").textContent = meta.last_updated ? ("Last updated Rapaport data: " + meta.last_updated) : "";
+
+      } catch (err) {
+        console.error("meta load error", err);
+      }
+    }
+
+    // helpers to get selected pill & shape
+    function getPillValue(containerId) {
+      const c = document.getElementById(containerId);
+      const active = c ? c.querySelector(".active") : null;
+      return active ? active.dataset.value : null;
+    }
+    function getShapeValue(containerId) {
+      const c = document.getElementById(containerId);
+      const active = c ? c.querySelector(".shape-btn.active") : null;
+      return active ? active.dataset.value : null;
+    }
+    function getLabValue() {
+      const container = document.getElementById("gia-labs");
+      if (!container) return "GIA";
+      const active = container.querySelector(".lab-btn.active");
+      return active ? active.dataset.value : "GIA";
+    }
+
+    // loaders
+    const overlay = document.getElementById("overlay");
+    function showLoader(text="Calculating...") { 
+      overlay.style.display = "flex"; 
+      document.getElementById("overlayText").textContent = text; 
+    }
+    function hideLoader() { overlay.style.display = "none"; }
+    function pulseBtn(btn) { 
+      btn.classList.add("btn-clicked"); 
+      setTimeout(() => btn.classList.remove("btn-clicked"), 280); 
+    }
+
+    // clear results helper
+    function clearResultForPanel(panelEl) {
+      if (!panelEl) return;
+      const res = panelEl.querySelector('[id$="-result"]');
+      if (res) res.innerHTML = "";
+    }
+
+    // validation modal
+    function showError(message) {
+      document.getElementById("errorModalBody").textContent = message;
+      const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+      modal.show();
+    }
+
+    // Reset panel: restore defaults
+    function resetPanel(panelPrefix) {
+      const panel = document.getElementById(`panel-${panelPrefix}`);
+      if (!panel) return;
+
+      panel.querySelectorAll("input[type=number]").forEach(inp => {
+        if (inp.id.includes('price-per-carat') || inp.id.includes('total-amount')) {
+          inp.value = "0";
+        } else if (inp.id.includes('rap-price')) {
+          inp.value = "0";
+        } else {
+          inp.value = inp.defaultValue || "";
+        }
+      });
+      
+      panel.querySelectorAll("input[type=range]").forEach(inp => {
+        const defaultVal = parseFloat(inp.getAttribute("value")) || 0;
+        inp.value = defaultVal;
+        const valEl = document.getElementById(inp.id + "-val");
+        if (valEl) valEl.textContent = inp.value;
+      });
+      
+      panel.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+      panel.querySelectorAll(".shape-container .shape-btn").forEach((btn, idx) => {
+        btn.classList.toggle("active", idx === 0);
+      });
+      panel.querySelectorAll(".pill").forEach((p, idx) => p.classList.toggle("active", idx === 0));
+      const res = panel.querySelector('[id$="-result"]');
+      if (res) res.innerHTML = "";
+    }
+
+    // Reset with loader
+    function resetWithLoader(panelPrefix) {
+      showLoader("Resetting...");
+      resetPanel(panelPrefix);
+      setTimeout(() => hideLoader(), 800);
+    }
+
+    // Disable auto calculation on input changes, only clear results
+    function disableAutoCalcOnInputs(panelEl) {
+      if (!panelEl) return;
+      clearResultForPanel(panelEl);
+    }
+
+    // bind sliders and show signed values
+    function bindSlider(sliderId, displayId) {
+      const s = document.getElementById(sliderId);
+      const d = document.getElementById(displayId);
+      if (!s || !d) return;
+      d.textContent = s.value;
+      s.addEventListener("input", () => {
+        d.textContent = s.value;
+        disableAutoCalcOnInputs(s.closest('.mode-panel'));
+      });
+    }
+
+    // Validation functions
+    function isGIAInputsValid(silent=false) {
+      if (!getShapeValue("gia-shapes")) { if (!silent) showError("Please select a Shape."); return false; }
+      if (!getPillValue("gia-colors")) { if (!silent) showError("Please select a Color."); return false; }
+      if (!getPillValue("gia-clarities")) { if (!silent) showError("Please select a Clarity."); return false; }
+      return true;
+    }
+
+    function isHRDInputsValid(silent=false) {
+      if (!getShapeValue("hrd-shapes")) { if (!silent) showError("Please select a Shape."); return false; }
+      if (!getPillValue("hrd-colors")) { if (!silent) showError("Please select a Color."); return false; }
+      if (!getPillValue("hrd-clarities")) { if (!silent) showError("Please select a Clarity."); return false; }
+      return true;
+    }
+
+    function isRecutInputsValid(silent=false) {
+      if (!getShapeValue("recut-a-shapes") || !getShapeValue("recut-b-shapes")) { if (!silent) showError("Please select Shape for both stones."); return false; }
+      if (!getPillValue("recut-a-colors") || !getPillValue("recut-b-colors")) { if (!silent) showError("Please select Color for both stones."); return false; }
+      if (!getPillValue("recut-a-clarities") || !getPillValue("recut-b-clarities")) { if (!silent) showError("Please select Clarity for both stones."); return false; }
+      return true;
+    }
+
+    // transform clarity: if FL selected, send IF
+    function normalizeClarity(c) {
+      if (!c) return c;
+      if (c === "FL") return "IF";
+      return c;
+    }
+
+    const rapPriceGlobal = { value: 0 };
+
+    // Function to update price fields based on discount
+    function updatePriceFromDiscount(panelPrefix, rapPrice) {
+      const weight = parseFloat(document.getElementById(`${panelPrefix}-weight`).value) || 0;
+      const discount = parseFloat(document.getElementById(`${panelPrefix}-discount`).value) || 0;
+      const pricePerCaratInput = document.getElementById(`${panelPrefix}-price-per-carat`);
+      const totalAmountInput = document.getElementById(`${panelPrefix}-total-amount`);
+      const rapPriceInput = document.getElementById(`${panelPrefix}-rap-price`);
+      
+      // Update rap price field
+      if (rapPriceInput) rapPriceInput.value = rapPrice.toFixed(2);
+      
+      // Calculate price per carat with discount
+      const pricePerCarat = rapPrice * (1 + discount/100);
+      const totalAmount = pricePerCarat * weight;
+      
+      // Update the fields
+      if (pricePerCaratInput) pricePerCaratInput.value = pricePerCarat.toFixed(2);
+      if (totalAmountInput) totalAmountInput.value = totalAmount.toFixed(2);
+    }
+    
+    // Function to update discount based on price per carat
+    function updateDiscountFromPrice(panelPrefix, rapPrice) {
+      const pricePerCarat = parseFloat(document.getElementById(`${panelPrefix}-price-per-carat`).value) || 0;
+      const discountInput = document.getElementById(`${panelPrefix}-discount`);
+      const discountValueSpan = document.getElementById(`${panelPrefix}-discount-val`);
+      
+      // Calculate discount
+      const discount = ((pricePerCarat / rapPrice) - 1) * 100;
+      
+      // Update the discount field
+      if (discountInput) discountInput.value = Math.round(discount);
+      if (discountValueSpan) discountValueSpan.textContent = Math.round(discount);
+    }
+    
+    // Function to update price per carat based on total amount
+    function updatePricePerCaratFromTotal(panelPrefix) {
+      const weight = parseFloat(document.getElementById(`${panelPrefix}-weight`).value) || 0;
+      const totalAmount = parseFloat(document.getElementById(`${panelPrefix}-total-amount`).value) || 0;
+      const pricePerCaratInput = document.getElementById(`${panelPrefix}-price-per-carat`);
+      const rapPrice = parseFloat(document.getElementById(`${panelPrefix}-rap-price`).value) || 0;
+      const discountInput = document.getElementById(`${panelPrefix}-discount`);
+      const discountValueSpan = document.getElementById(`${panelPrefix}-discount-val`);
+      
+      if (weight > 0) {
+        const pricePerCarat = totalAmount / weight;
+        if (pricePerCaratInput) pricePerCaratInput.value = pricePerCarat.toFixed(2);
+        
+        // Also update discount if we have a rap price
+        if (rapPrice > 0) {
+          const discount = ((pricePerCarat / rapPrice) - 1) * 100;
+          if (discountInput) discountInput.value = Math.round(discount);
+          if (discountValueSpan) discountValueSpan.textContent = Math.round(discount);
+        }
+      }
+    }
+    
+    // Function to update total amount when weight or price changes
+    function updateTotalAmount(panelPrefix) {
+      const weight = parseFloat(document.getElementById(`${panelPrefix}-weight`).value) || 0;
+      const pricePerCarat = parseFloat(document.getElementById(`${panelPrefix}-price-per-carat`).value) || 0;
+      const totalAmountInput = document.getElementById(`${panelPrefix}-total-amount`);
+      
+      if (totalAmountInput) totalAmountInput.value = (weight * pricePerCarat).toFixed(2);
+    }
+
+    function setupInputListeners() {
+      // GIA panel listeners
+      const giaDiscount = document.getElementById("gia-discount");
+      const giaPricePerCarat = document.getElementById("gia-price-per-carat");
+      const giaTotalAmount = document.getElementById("gia-total-amount");
+      const giaWeight = document.getElementById("gia-weight");
+      
+      if (giaDiscount) {
+        giaDiscount.addEventListener("input", function() {
+          document.getElementById("gia-discount-val").textContent = this.value;
+          if (rapPriceGlobal.value > 0) {
+            updatePriceFromDiscount("gia", rapPriceGlobal.value);
+          }
+        });
+      }
+      
+      if (giaPricePerCarat) {
+        giaPricePerCarat.addEventListener("input", function() {
+          if (rapPriceGlobal.value > 0) {
+            updateDiscountFromPrice("gia", rapPriceGlobal.value);
+          }
+          updateTotalAmount("gia");
+        });
+      }
+      
+      if (giaTotalAmount) {
+        giaTotalAmount.addEventListener("input", function() {
+          updatePricePerCaratFromTotal("gia");
+        });
+      }
+      
+      if (giaWeight) {
+        giaWeight.addEventListener("input", function() {
+          updateTotalAmount("gia");
+          // If total amount is manually set, update price per carat
+          const totalAmount = parseFloat(document.getElementById("gia-total-amount").value) || 0;
+          if (totalAmount > 0) {
+            updatePricePerCaratFromTotal("gia");
+          }
+        });
+      }
+      
+      // Similar listeners for HRD and Recut panels would go here
+      // (Implementation would be similar to the above)
+      
+      // HRD panel listeners
+      const hrdDiscount = document.getElementById("hrd-disc");
+      const hrdPricePerCarat = document.getElementById("hrd-price-per-carat");
+      const hrdTotalAmount = document.getElementById("hrd-total-amount");
+      const hrdWeight = document.getElementById("hrd-weight");
+      
+      if (hrdDiscount) {
+        hrdDiscount.addEventListener("input", function() {
+          document.getElementById("hrd-disc-val").textContent = this.value;
+          const rapPrice = parseFloat(document.getElementById("hrd-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updatePriceFromDiscount("hrd", rapPrice);
+          }
+        });
+      }
+      
+      if (hrdPricePerCarat) {
+        hrdPricePerCarat.addEventListener("input", function() {
+          const rapPrice = parseFloat(document.getElementById("hrd-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updateDiscountFromPrice("hrd", rapPrice);
+          }
+          updateTotalAmount("hrd");
+        });
+      }
+      
+      if (hrdTotalAmount) {
+        hrdTotalAmount.addEventListener("input", function() {
+          updatePricePerCaratFromTotal("hrd");
+        });
+      }
+      
+      if (hrdWeight) {
+        hrdWeight.addEventListener("input", function() {
+          updateTotalAmount("hrd");
+          // If total amount is manually set, update price per carat
+          const totalAmount = parseFloat(document.getElementById("hrd-total-amount").value) || 0;
+          if (totalAmount > 0) {
+            updatePricePerCaratFromTotal("hrd");
+          }
+        });
+      }
+      
+      // Recut panel listeners for Diamond A
+      const recutADiscount = document.getElementById("recut-a-disc");
+      const recutAPricePerCarat = document.getElementById("recut-a-price-per-carat");
+      const recutATotalAmount = document.getElementById("recut-a-total-amount");
+      const recutAWeight = document.getElementById("recut-a-weight");
+      
+      if (recutADiscount) {
+        recutADiscount.addEventListener("input", function() {
+          document.getElementById("recut-a-disc-val").textContent = this.value;
+          const rapPrice = parseFloat(document.getElementById("recut-a-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updatePriceFromDiscount("recut-a", rapPrice);
+          }
+        });
+      }
+      
+      if (recutAPricePerCarat) {
+        recutAPricePerCarat.addEventListener("input", function() {
+          const rapPrice = parseFloat(document.getElementById("recut-a-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updateDiscountFromPrice("recut-a", rapPrice);
+          }
+          updateTotalAmount("recut-a");
+        });
+      }
+      
+      if (recutATotalAmount) {
+        recutATotalAmount.addEventListener("input", function() {
+          updatePricePerCaratFromTotal("recut-a");
+        });
+      }
+      
+      if (recutAWeight) {
+        recutAWeight.addEventListener("input", function() {
+          updateTotalAmount("recut-a");
+          // If total amount is manually set, update price per carat
+          const totalAmount = parseFloat(document.getElementById("recut-a-total-amount").value) || 0;
+          if (totalAmount > 0) {
+            updatePricePerCaratFromTotal("recut-a");
+          }
+        });
+      }
+      
+      // Recut panel listeners for Diamond B
+      const recutBDiscount = document.getElementById("recut-b-disc");
+      const recutBPricePerCarat = document.getElementById("recut-b-price-per-carat");
+      const recutBTotalAmount = document.getElementById("recut-b-total-amount");
+      const recutBWeight = document.getElementById("recut-b-weight");
+      
+      if (recutBDiscount) {
+        recutBDiscount.addEventListener("input", function() {
+          document.getElementById("recut-b-disc-val").textContent = this.value;
+          const rapPrice = parseFloat(document.getElementById("recut-b-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updatePriceFromDiscount("recut-b", rapPrice);
+          }
+        });
+      }
+      
+      if (recutBPricePerCarat) {
+        recutBPricePerCarat.addEventListener("input", function() {
+          const rapPrice = parseFloat(document.getElementById("recut-b-rap-price").value) || 0;
+          if (rapPrice > 0) {
+            updateDiscountFromPrice("recut-b", rapPrice);
+          }
+          updateTotalAmount("recut-b");
+        });
+      }
+      
+      if (recutBTotalAmount) {
+        recutBTotalAmount.addEventListener("input", function() {
+          updatePricePerCaratFromTotal("recut-b");
+        });
+      }
+      
+      if (recutBWeight) {
+        recutBWeight.addEventListener("input", function() {
+          updateTotalAmount("recut-b");
+          // If total amount is manually set, update price per carat
+          const totalAmount = parseFloat(document.getElementById("recut-b-total-amount").value) || 0;
+          if (totalAmount > 0) {
+            updatePricePerCaratFromTotal("recut-b");
+          }
+        });
+      }
+    }
+
+    async function computeGIA(userTriggered = false) {
+      if (!isGIAInputsValid(!userTriggered)) return;
+
+      const btn = document.getElementById("gia-calc");
+      if (userTriggered) pulseBtn(btn);
+
+      const weight = parseFloat(document.getElementById("gia-weight").value) || 0;
+      if (weight <= 0) {
+        alert("Weight must be greater than 0");
+        return;
+      }
+
+      const shape = getShapeValue("gia-shapes");
+      const color = getPillValue("gia-colors");
+      const clarity = normalizeClarity(getPillValue("gia-clarities"));
+      const use_5cts = document.getElementById("gia-5cts").checked;
+
+      let discountRaw = parseFloat(document.getElementById("gia-discount").value);
+      if (isNaN(discountRaw)) discountRaw = 0;
+
+      const payload = {
+        weight,
+        shape,
+        color,
+        clarity,
+        use_5cts,
+        discount_val: Math.abs(discountRaw)
+      };
+
+      try {
+        showLoader();
+        const res = await fetch(`${apiBase}/calc/gia`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        hideLoader();
+
+        if (!res.ok) {
+          document.getElementById("gia-result").innerHTML =
+            `<div class='alert alert-danger text-center'>${data.detail || data.error || "Error"}</div>`;
+          return;
+        }
+
+        rapPriceGlobal.value = data.rap_price_ct || 0;
+
+        // Update the price fields
+        updatePriceFromDiscount("gia", rapPriceGlobal.value);
+
+        document.getElementById("gia-result").innerHTML = `
+          <div class="card-result text-center" style="font-size:1.1rem; line-height:1.4;">
+            <div class="result-title" style="font-weight:bold; margin-bottom: 10px;">💎 GIA Result</div>
+            <div><strong>Rapaport Price/Ct:</strong> $${Number(data.rap_price_ct).toFixed(2)}</div>
+            <div><strong>Applied Discount:</strong> ${discountRaw}%</div>
+            <div><strong>Price per Ct (USD):</strong> $${Number(data.price_per_ct).toFixed(2)}</div>
+            <div><strong>Total (USD):</strong> $${Number(data.total_usd).toFixed(2)}</div>
+            <div><strong>USD→INR Rate:</strong> ₹${data.usd_to_inr}</div>
+            <div><strong>Total (INR):</strong> ₹${Number(data.total_inr).toLocaleString()}</div>
+          </div>
+        `;
+
+        // Sync slider display value
+        document.getElementById("gia-discount-val").textContent = discountRaw;
+
+      } catch (err) {
+        hideLoader();
+        document.getElementById("gia-result").innerHTML =
+          `<div class='alert alert-danger text-center'>Network error</div>`;
+      }
+    }
+
+    async function computeHRD(userTriggered = false) {
+      if (!isHRDInputsValid(!userTriggered)) return;
+
+      const btn = document.getElementById("hrd-calc");
+      if (userTriggered) pulseBtn(btn);
+
+      const weight = parseFloat(document.getElementById("hrd-weight").value) || 0;
+      if (weight <= 0) {
+        alert("Weight must be greater than 0");
+        return;
+      }
+
+      const shape = getShapeValue("hrd-shapes");
+      const color = getPillValue("hrd-colors");
+      const clarity = normalizeClarity(getPillValue("hrd-clarities"));
+      const use_5cts = document.getElementById("hrd-5cts").checked;
+      const disc_val = parseFloat(document.getElementById("hrd-disc").value) || 0;
+      const disc_val_gia = parseFloat(document.getElementById("hrd-disc-gia").value) || 0;
+
+      const payload = {
+        weight,
+        shape,
+        color,
+        clarity,
+        use_5cts,
+        disc_val: Math.abs(disc_val),
+        disc_val_gia: Math.abs(disc_val_gia)
+      };
+
+      try {
+        showLoader();
+        const res = await fetch(`${apiBase}/calc/hrd`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        hideLoader();
+
+        if (!res.ok) {
+          document.getElementById("hrd-result").innerHTML =
+            `<div class='alert alert-danger text-center'>${data.detail || data.error || "Error"}</div>`;
+          return;
+        }
+
+        // Update the price fields
+        const rapPriceInput = document.getElementById("hrd-rap-price");
+        if (rapPriceInput) rapPriceInput.value = Number(data.rap_price_ct).toFixed(2);
+        
+        updatePriceFromDiscount("hrd", Number(data.rap_price_ct));
+
+        document.getElementById("hrd-result").innerHTML = `
+          <div class="card-result text-center" style="font-size:1.1rem; line-height:1.4;">
+            <div class="result-title" style="font-weight:bold; margin-bottom: 10px;">💎 HRD Result</div>
+            <div><strong>Rapaport Price/Ct:</strong> $${Number(data.rap_price_ct).toFixed(2)}</div>
+            <div><strong>GIA Rapaport Price/Ct:</strong> $${Number(data.rap_price_ct_gia).toFixed(2)}</div>
+            <div><strong>GIA Color Used:</strong> ${data.gia_color}</div>
+            <div><strong>Price per Ct (USD):</strong> $${Number(data.price_per_ct).toFixed(2)}</div>
+            <div><strong>GIA Price per Ct (USD):</strong> $${Number(data.price_per_ct_gia).toFixed(2)}</div>
+            <div><strong>Total (USD):</strong> $${Number(data.total_usd).toFixed(2)}</div>
+            <div><strong>USD→INR Rate:</strong> ₹${data.usd_to_inr}</div>
+            <div><strong>Total (INR):</strong> ₹${Number(data.total_inr).toLocaleString()}</div>
+          </div>
+        `;
+      } catch (err) {
+        hideLoader();
+        document.getElementById("hrd-result").innerHTML =
+          `<div class='alert alert-danger text-center'>Network error</div>`;
+      }
+    }
+
+    async function computeRecut(userTriggered=false) {
+      if (!isRecutInputsValid(!userTriggered)) return;
+      const btn = document.getElementById("recut-calc");
+      if (userTriggered) pulseBtn(btn);
+
+      const payload = {
+        use_5cts: document.getElementById("recut-5cts").checked,
+        stone_a: {
+          weight: parseFloat(document.getElementById("recut-a-weight").value) || 0,
+          shape: getShapeValue("recut-a-shapes"),
+          color: getPillValue("recut-a-colors"),
+          clarity: normalizeClarity(getPillValue("recut-a-clarities")),
+          discount_val: Math.abs(parseFloat(document.getElementById("recut-a-disc").value) || 0)
+        },
+        stone_b: {
+          weight: parseFloat(document.getElementById("recut-b-weight").value) || 0,
+          shape: getShapeValue("recut-b-shapes"),
+          color: getPillValue("recut-b-colors"),
+          clarity: normalizeClarity(getPillValue("recut-b-clarities")),
+          discount_val: Math.abs(parseFloat(document.getElementById("recut-b-disc").value) || 0)
+        }
+      };
+
+      try {
+        showLoader();
+        const res = await fetch(`${apiBase}/calc/recut`, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        hideLoader();
+
+        if (!res.ok) {
+          document.getElementById("recut-result").innerHTML = `<div class='alert alert-danger text-center'>${data.detail||data.error||"Error"}</div>`;
+          return;
+        }
+
+        // Update price fields for Diamond A
+        const rapPriceA = document.getElementById("recut-a-rap-price");
+        if (rapPriceA) rapPriceA.value = Number(data.stone_a.rap).toFixed(2);
+        
+        updatePriceFromDiscount("recut-a", Number(data.stone_a.rap));
+
+        // Update price fields for Diamond B
+        const rapPriceB = document.getElementById("recut-b-rap-price");
+        if (rapPriceB) rapPriceB.value = Number(data.stone_b.rap).toFixed(2);
+        
+        updatePriceFromDiscount("recut-b", Number(data.stone_b.rap));
+
+        document.getElementById("recut-result").innerHTML = `
+          <div class="card-result text-center" style="font-size:1.1rem; line-height:1.4;">
+            <div class="result-title" style="font-weight:bold; margin-bottom: 10px;">💎 Recut Result</div>
+            <div><strong>Stone A Rapaport:</strong> $${Number(data.stone_a.rap).toFixed(2)}</div>
+            <div><strong>Stone A Price/Ct:</strong> $${Number(data.stone_a.price_per_ct).toFixed(2)}</div>
+            <div><strong>Stone A Total USD:</strong> $${Number(data.stone_a.total_usd).toFixed(2)}</div>
+            <div><strong>Stone B Rapaport:</strong> $${Number(data.stone_b.rap).toFixed(2)}</div>
+            <div><strong>Stone B Price/Ct:</strong> $${Number(data.stone_b.price_per_ct).toFixed(2)}</div>
+            <div><strong>Stone B Total USD:</strong> $${Number(data.stone_b.total_usd).toFixed(2)}</div>
+            <div><strong>Diff USD:</strong> $${Number(data.diff_usd).toFixed(2)}</div>
+            <div><strong>Cost %:</strong> ${Number(data.cost_percent).toFixed(2)}%</div>
+            <div><strong>Up/Down %:</strong> ${Number(data.up_down_percent).toFixed(2)}%</div>
+            <div><strong>USD→INR Rate:</strong> ₹${data.usd_to_inr}</div>
+            <div><strong>Total (INR):</strong> ₹${Number(data.total_inr).toLocaleString()}</div>
+          </div>
+        `;
+      } catch (err) {
+        hideLoader();
+        document.getElementById("recut-result").innerHTML = `<div class='alert alert-danger text-center'>Network error</div>`;
+      }
+    }
+
+    // Initialization
+    document.addEventListener("DOMContentLoaded", () => {
+      setupInputListeners();
+      loadMeta();
+      
+      // Show initial loader
+      showLoader("✨ Polishing the diamonds... Please wait! ✨");
+      setTimeout(() => {
+        hideLoader();
+      }, 2000);
+      
+      // Bind all calculate buttons
+      document.getElementById("gia-calc").addEventListener("click", () => computeGIA(true));
+      document.getElementById("hrd-calc").addEventListener("click", () => computeHRD(true));
+      document.getElementById("recut-calc").addEventListener("click", () => computeRecut(true));
+      
+      // Bind reset buttons
+      document.getElementById("gia-reset").addEventListener("click", () => resetWithLoader("gia"));
+      document.getElementById("hrd-reset").addEventListener("click", () => resetWithLoader("hrd"));
+      document.getElementById("recut-reset").addEventListener("click", () => resetWithLoader("recut"));
+      
+      // Mode switching
+      document.getElementById("modeBtns").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-mode]");
+        if (!btn) return;
+        
+        document.querySelectorAll("#modeBtns button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        document.querySelectorAll(".mode-panel").forEach(panel => panel.classList.add("d-none"));
+        
+        const mode = btn.dataset.mode;
+        const panelId = `panel-${mode}`;
+        const panel = document.getElementById(panelId);
+        if (panel) panel.classList.remove("d-none");
+      });
+      
+      // Bind input listeners to clear results
+      [
+        "gia-weight","hrd-weight","recut-a-weight","recut-b-weight",
+        "gia-discount","hrd-disc","hrd-disc-gia","recut-a-disc","recut-b-disc",
+        "gia-price-per-carat","hrd-price-per-carat","recut-a-price-per-carat","recut-b-price-per-carat",
+        "gia-total-amount","hrd-total-amount","recut-a-total-amount","recut-b-total-amount"
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", () => disableAutoCalcOnInputs(el.closest('.mode-panel')));
+      });
+      
+      // Bind sliders
+      bindSlider("gia-discount","gia-discount-val");
+      bindSlider("hrd-disc","hrd-disc-val");
+      bindSlider("hrd-disc-gia","hrd-disc-gia-val");
+      bindSlider("recut-a-disc","recut-a-disc-val");
+      bindSlider("recut-b-disc","recut-b-disc-val");
+    });
+  </script>
+</body>
+</html>
